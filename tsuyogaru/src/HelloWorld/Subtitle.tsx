@@ -19,7 +19,7 @@ export const Subtitle: React.FC = () => {
   const frame = useCurrentFrame();
   const opacity = interpolate(frame, [0, 30], [0, 1]);
   return (
-    <div style={{ ...subtitle, opacity }}>
+    <div style={{ ...subtitle, color: "#FFFFFF", opacity }}>
       Edit <code style={codeStyle}>src/Root.tsx</code> and save to reload.
     </div>
   );
