@@ -46,7 +46,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="AbcTest"
         component={AbcExample}
-        durationInFrames={60 * 3 * 60}
+        durationInFrames={60 * (1 * 60 + 32)}
         fps={60}
         width={1920}
         height={1080}

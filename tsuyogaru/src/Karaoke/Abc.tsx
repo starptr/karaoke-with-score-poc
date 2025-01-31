@@ -13,10 +13,10 @@ export function Abc({ abc }: { abc: string }) {
       add_classes: true,
       responsive: "resize",
       //generateDownload: true
-      timeBasedLayout: {
-        minPadding: 20,
-        align: "left",
-      },
+      //timeBasedLayout: {
+      //  minPadding: 20,
+      //  align: "left",
+      //},
     });
   }, [abcTune]);
 

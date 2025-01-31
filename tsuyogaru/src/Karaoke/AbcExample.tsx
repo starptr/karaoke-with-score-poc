@@ -4,6 +4,8 @@ import {
   spring,
   useCurrentFrame,
   useVideoConfig,
+  staticFile,
+  Audio,
 } from "remotion";
 import { z } from "zod";
 import { zColor } from "@remotion/zod-types";
@@ -236,13 +238,98 @@ export const AbcExample: React.FC<z.infer<typeof myCompSchema2>> = ({
     "\n"
     ;
 
+  // Values for time-based layout
+  const timeProportionalValues = {
+    width_in_px: 16000, // in px
+    start: 0,
+    end() {
+      return this.width_in_px + 1920*2;
+    },
+    width() {
+      return `${this.width_in_px}px`;
+    },
+    progress() {
+      const proportion = interpolate(
+        frame,
+        [0, videoConfig.durationInFrames],
+        [this.start, this.end()],
+      );
+      return `${proportion}px`;
+    }
+  };
+  const timeProportionalStyle = {
+    width: timeProportionalValues.width(),
+    transform: `translateX(-${timeProportionalValues.progress()})`,
+  };
+
+  const typesetValues = {
+    width_in_px: 36000, // in px
+    progress(): number {
+      // transform time -> progress from 0 to 1
+      // The time represents a point in the song, in seconds
+      // The progress represents the proportion of the absoluteFill width that has passed
+      const cur = frame / videoConfig.fps;
+      const mapping = [
+        [0, 0],
+        [4.0, 0.039],
+        [7.5, 0.076],
+        [15.6, 0.110],
+        [19.0, 0.156],
+        [21.0, 0.191],
+        [24.0, 0.232],
+        [26.2, 0.269],
+        [28.1, 0.300],
+        [30.0, 0.3275],
+        [32.3, 0.3465],
+        [34.1, 0.382],
+        [36.3, 0.4068],
+        [38.1, 0.4425],
+
+        [40.0, 0.466],
+        [43.5, 0.491],
+        [47.1, 0.535],
+        [50.9, 0.574],
+        [54.8, 0.606],
+        [58.7, 0.649],
+        [1*60+3.3, 0.685],
+        [1*60+5.1, 0.712],
+        [1*60+7.5, 0.746],
+        [1*60+9.1, 0.773],
+        [1*60+11.4, 0.800],
+        [1*60+13.2, 0.828],
+        [1*60+15.4, 0.862],
+        [1*60+17.0, 0.889],
+        [1*60+19.1, 0.915],
+        [1*60+23.3, 0.939],
+        [1*60+26.6, 0.9775],
+      ];
+      let [lastTime, lastProgress] = mapping[0];
+      for (const [time, progress] of mapping) {
+        if (cur < time) {
+          return lastProgress;
+        }
+        lastTime = time;
+        lastProgress = progress;
+      }
+      return lastProgress;
+    }
+  };
+  const typesetStyle = {
+    width: `${typesetValues.width_in_px}px`,
+    transform: `translateX(-${typesetValues.progress() * 100}%) translateY(-50px)`,
+  };
+
   return (
-    <AbsoluteFill>
+    <AbsoluteFill style={{
+      backgroundColor: "black",
+    }}>
+      <Audio src={staticFile("instrumental-short-tsugaru-girl.mp3")} />
       <AbsoluteFill style={{
-        backgroundColor: "black",
+        ...typesetStyle,
         color: "#FFFFFF",
-        width: "4000%",
-        transform: `translateX(-${progress}%)`,
+        //width: "40000px",
+        //transform: `translateX(-${progress}%) translateY(-100px)`,
+        //transform: `translateX(-${progress}%)`,
       }}>
         <Abc abc={abcSource} />
       </AbsoluteFill>
