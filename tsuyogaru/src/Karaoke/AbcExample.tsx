@@ -269,6 +269,7 @@ export const AbcExample: React.FC<z.infer<typeof myCompSchema2>> = ({
       // The time represents a point in the song, in seconds
       // The progress represents the proportion of the absoluteFill width that has passed
       const cur = frame / videoConfig.fps;
+      // INFO: Only use a Chromium browser! Both visual and audio playback is different in Firefox vs the render
       const mapping = [
         [0, 0],
         [4.0, 0.039],
